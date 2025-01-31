@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import type { SnackCMS } from '../src/types'
-import { init } from '../src/index'
+import { createCMS } from '../src/index'
 
 describe('SNACK Core', () => {
 	let cms: SnackCMS
 
 	beforeAll(async () => {
-		cms = await init({
+		cms = await createCMS({
 			schemas: {
 				posts: {
 					name: 'Posts',
@@ -15,12 +15,6 @@ describe('SNACK Core', () => {
 						{ name: 'content', type: 'string' },
 						{ name: 'published', type: 'boolean', defaultValue: false }
 					]
-				}
-			},
-			storage: {
-				sqlite: {
-					dbPath: ':memory:',
-					verbose: false
 				}
 			}
 		})
@@ -45,6 +39,8 @@ describe('SNACK Core', () => {
 			expect(post.title).toBe('Test Post')
 			expect(post.content).toBe('This is a test')
 			expect(post.published).toBe(true)
+			expect(post.created_at).toBeDefined()
+			expect(post.updated_at).toBeDefined()
 
 			postId = post.id
 		})
@@ -66,6 +62,7 @@ describe('SNACK Core', () => {
 			expect(updated.id).toBe(postId)
 			expect(updated.title).toBe('Updated Title')
 			expect(updated.content).toBe('Updated content')
+			expect(updated.updated_at).not.toBe(updated.created_at)
 		})
 
 		it('should query posts', async () => {
@@ -100,8 +97,56 @@ describe('SNACK Core', () => {
 				title: 'Default Test',
 				content: 'Testing defaults'
 			})
-
 			expect(post.published).toBe(false)
+		})
+	})
+
+	describe('Storage Operations', () => {
+		it('should handle JSON fields correctly', async () => {
+			// First, let's create a new schema with a JSON field
+			await cms.storage.prepareSchema('articles', [
+				{ name: 'title', type: 'string', required: true },
+				{ name: 'metadata', type: 'json' }
+			])
+
+			const metadata = {
+				tags: ['test', 'json'],
+				views: 0,
+				settings: { isPublic: true }
+			}
+
+			const article = await cms.handlers.create('articles', {
+				title: 'JSON Test',
+				metadata
+			})
+
+			expect(article.metadata).toEqual(metadata)
+
+			// Read it back to ensure it was stored correctly
+			const retrieved = await cms.handlers.read('articles', article.id)
+			expect(retrieved.metadata).toEqual(metadata)
+		})
+
+		it('should handle date fields correctly', async () => {
+			// Create a new schema with a date field
+			await cms.storage.prepareSchema('events', [
+				{ name: 'title', type: 'string', required: true },
+				{ name: 'eventDate', type: 'date' }
+			])
+
+			const date = new Date()
+			const event = await cms.handlers.create('events', {
+				title: 'Date Test',
+				eventDate: date
+			})
+
+			expect(event.eventDate).toBeInstanceOf(Date)
+			expect(event.eventDate.toISOString()).toBe(date.toISOString())
+
+			// Read it back to ensure it was stored correctly
+			const retrieved = await cms.handlers.read('events', event.id)
+			expect(retrieved.eventDate).toBeInstanceOf(Date)
+			expect(retrieved.eventDate.toISOString()).toBe(date.toISOString())
 		})
 	})
 })
