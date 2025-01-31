@@ -12,7 +12,6 @@ export async function createCMS(config: SnackConfig): Promise<SnackCMS> {
 		await storage.prepareSchema(name, schema.fields)
 	}
 
-	// Create handlers
 	const handlers = createHandlers(storage)
 
 	return {
