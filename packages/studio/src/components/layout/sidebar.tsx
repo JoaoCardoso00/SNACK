@@ -1,6 +1,5 @@
 import * as React from "react"
 import { GalleryVerticalEnd } from "lucide-react"
-
 import {
   Sidebar,
   SidebarContent,
@@ -13,145 +12,38 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { NavLink } from "react-router-dom"
 
-const data = {
+type NavItem = {
+  type: 'category' | 'item'
+  title: string
+  url?: string
+  items?: Omit<NavItem, 'type'>[]
+}
+
+const data: { navMain: NavItem[] } = {
   navMain: [
     {
-      title: "Getting Started",
-      url: "#",
+      type: 'category',
+      title: "Blog",
       items: [
-        {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
+        { title: "Posts", url: "/blog/posts" },
+        { title: "Authors", url: "/blog/authors" }
+      ]
     },
     {
-      title: "Building Your Application",
-      url: "#",
+      type: 'category',
+      title: "Pages",
       items: [
-        {
-          title: "Routing",
-          url: "#",
-        },
-        {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
+        { title: "Home", url: "/pages/home" }
+      ]
     },
     {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
+      type: 'item',
+      title: "Settings",
+      url: "/settings"
     },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
-      ],
-    },
-  ],
+  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -161,15 +53,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <NavLink to="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
+                  <span className="font-semibold">SNACK Studio</span>
+                  <span className="">alpha</span>
                 </div>
-              </a>
+              </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -177,26 +69,44 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="gap-2">
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url} className="font-medium">
-                    {item.title}
-                  </a>
-                </SidebarMenuButton>
-                {item.items?.length ? (
+            {data.navMain.map((section) => {
+              if (section.type === 'item') {
+                return (
+                  <SidebarMenuItem key={section.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={section.url!}
+                        className={({ isActive }) => isActive ? 'active' : ''}
+                      >
+                        {section.title}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              }
+
+              return (
+                <SidebarMenuItem key={section.title}>
+                  <SidebarMenuButton className="font-medium">
+                    {section.title}
+                  </SidebarMenuButton>
                   <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                    {item.items.map((item) => (
+                    {section.items?.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
-                          <a href={item.url}>{item.title}</a>
+                        <SidebarMenuSubButton asChild>
+                          <NavLink
+                            to={item.url!}
+                            className={({ isActive }) => isActive ? 'active' : ''}
+                          >
+                            {item.title}
+                          </NavLink>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
                   </SidebarMenuSub>
-                ) : null}
-              </SidebarMenuItem>
-            ))}
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
