@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GalleryVerticalEnd } from "lucide-react"
+import { ChevronRight, Folder, GalleryVerticalEnd } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -13,35 +13,23 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { NavLink } from "react-router-dom"
+import { cn } from "@/lib/utils"
 
 type NavItem = {
-  type: 'category' | 'item'
   title: string
   url?: string
   items?: Omit<NavItem, 'type'>[]
 }
 
-const data: { navMain: NavItem[] } = {
+const dataWithoutCategory: { navMain: NavItem[] } = {
   navMain: [
     {
-      type: 'category',
-      title: "Blog",
+      title: "Content",
       items: [
-        { title: "Posts", url: "/blog/posts" },
-        { title: "Authors", url: "/blog/authors" }
+        { title: "Posts", url: "/posts" },
+        { title: "Authors", url: "/authors" },
+        { title: "Home", url: "/home" }
       ]
-    },
-    {
-      type: 'category',
-      title: "Pages",
-      items: [
-        { title: "Home", url: "/pages/home" }
-      ]
-    },
-    {
-      type: 'item',
-      title: "Settings",
-      url: "/settings"
     },
   ]
 }
@@ -69,44 +57,37 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="gap-2">
-            {data.navMain.map((section) => {
-              if (section.type === 'item') {
-                return (
-                  <SidebarMenuItem key={section.title}>
-                    <SidebarMenuButton asChild>
-                      <NavLink
-                        to={section.url!}
-                        className={({ isActive }) => isActive ? 'active' : ''}
-                      >
-                        {section.title}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
-              }
-
-              return (
-                <SidebarMenuItem key={section.title}>
-                  <SidebarMenuButton className="font-medium">
-                    {section.title}
-                  </SidebarMenuButton>
-                  <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                    {section.items?.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild>
-                          <NavLink
-                            to={item.url!}
-                            className={({ isActive }) => isActive ? 'active' : ''}
-                          >
-                            {item.title}
-                          </NavLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </SidebarMenuItem>
-              )
-            })}
+            {dataWithoutCategory.navMain.map((section) => (
+              <SidebarMenuItem key={section.title}>
+                <SidebarMenuButton className="font-medium">
+                  {section.title}
+                </SidebarMenuButton>
+                <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
+                  {section.items?.map((item) => (
+                    <SidebarMenuSubItem key={item.title}>
+                      <SidebarMenuSubButton asChild>
+                        <NavLink
+                          to={item.url!}
+                          className={cn(
+                            "flex items-center [&.active]:bg-black/5 gap-2 py-2 px-3 rounded-md transition-colors",
+                            "hover:bg-black/5",
+                          )}
+                        >
+                          <Folder className="size-4" />
+                          {item.title}
+                          <ChevronRight
+                            className={cn(
+                              "size-4 ml-auto",
+                              "text-gray-400 group-hover:text-gray-500"
+                            )}
+                          />
+                        </NavLink>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
