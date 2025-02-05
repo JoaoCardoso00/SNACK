@@ -1,16 +1,17 @@
 import * as React from "react"
+
 import { ChevronRight, Folder, GalleryVerticalEnd } from "lucide-react"
 import {
   Sidebar,
-  SidebarContent,
+  SidebarMenu,
   SidebarGroup,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarContent,
   SidebarMenuSub,
-  SidebarMenuSubButton,
+  SidebarMenuItem,
+  SidebarMenuButton,
   SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar"
 import { NavLink } from "react-router-dom"
 import { cn } from "@/lib/utils"
