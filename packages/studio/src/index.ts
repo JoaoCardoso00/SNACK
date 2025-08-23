@@ -1,4 +1,6 @@
-export { Studio } from './components/studio'
+// Main export for @snack/studio package
+export { Studio as SnackStudio } from './components/studio'
+export { StudioRouter } from './components/router'
 
-// Export your UI components
-export { Button } from './components/ui/button'
+// Export types
+export type { SnackStudioProps } from './types'

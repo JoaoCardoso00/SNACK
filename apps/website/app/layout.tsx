@@ -11,6 +11,7 @@ const geistSans = Geist({
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
