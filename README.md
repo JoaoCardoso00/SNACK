@@ -15,7 +15,7 @@ SNACK aims to be:
 - ⚡ **Next.js Native**: Built from the ground up for Next.js
 - 🛠️ **Customizable**: Design your content types and API endpoints
 - 🔐 **Type-safe**: Full TypeScript support
-- 🚀 **BLAZINGLY FAST**: Because why not? (we are not using Rust btw)
+- 🚀 **BLAZINGLY FAST**: Because why not? 
 
 ## Coming Soon™
 
