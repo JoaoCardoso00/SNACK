@@ -14,28 +14,39 @@ export async function add(feature: string) {
 }
 
 async function addStudio() {
-	// Install dependencies
-	await execa('pnpm', ['add', '@snack/studio'])
-
-	// Create studio page
-	const studioDir = path.join(process.cwd(), 'app/studio')
+	// Create studio page with catch-all routes
+	const studioDir = path.join(process.cwd(), 'app/studio/[[...path]]')
 	await fs.mkdir(studioDir, { recursive: true })
 
 	await fs.writeFile(
 		path.join(studioDir, 'page.tsx'),
-		`import { SnackStudio } from '@snack/studio'
+		`'use client'
+
+import { StudioRouter } from '@snack/studio'
+import '@snack/studio/dist/index.css'
 
 export default function StudioPage() {
-  return <SnackStudio />
+  return (
+    <div className="min-h-screen">
+      <StudioRouter />
+    </div>
+  )
 }
 `)
 
 	console.log(`
-✨ Studio added successfully
+✨ Studio added successfully!
 
 Next steps:
-  1. Run your Next.js development server
-  2. Visit your studio page at /studio
-  3. Start managing your content
+  1. Set SNACK_API_TOKEN in .env.local (optional for auth)
+  2. Run: npm run dev (or pnpm dev)
+  3. Visit: http://localhost:3000/studio
+  4. Start managing your content!
+
+Studio features:
+  - Create, edit, and delete content
+  - Browse all your schemas
+  - Type-safe forms
+  - Real-time updates
 `)
 }

@@ -24,3 +24,6 @@ export async function createCMS(config: SnackConfig): Promise<SnackCMS> {
 export * from './types'
 export * from './storage'
 export * from './handlers'
+export { createRouteHandler } from './routes'
+export { defineType, defineField, fields, convertDocumentSchema } from './schema/define'
+export type { DocumentSchema } from './schema/define'

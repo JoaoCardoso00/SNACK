@@ -1,11 +1,13 @@
 import { generateTemplate } from '../utils/template'
 import { execa } from 'execa'
 import path from 'path'
+import { readFile } from 'fs/promises'
 
 export async function init() {
 	try {
 		console.log('CWD:', process.cwd())
-		const pkg = require(path.join(process.cwd(), 'package.json'))
+		const pkgContent = await readFile(path.join(process.cwd(), 'package.json'), 'utf-8')
+		const pkg = JSON.parse(pkgContent)
 		if (!pkg.dependencies?.['next']) throw new Error('Not Next.js project')
 
 		await generateTemplate(process.cwd(), {

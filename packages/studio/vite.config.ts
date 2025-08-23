@@ -12,13 +12,15 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'index'
     },
+    cssCodeSplit: false,
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM'
-        }
+        },
+        assetFileNames: '[name].[ext]'
       }
     }
   },

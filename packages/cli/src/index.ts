@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Command } from 'commander'
 import { create } from './commands/create'
 import { init } from './commands/init'
